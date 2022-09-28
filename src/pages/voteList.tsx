@@ -29,7 +29,7 @@ function VoteResult() {
                     to={
                         params.row.status === 1
                             ? `/selected/${params.row.id}`
-                            : ""
+                            : `/result/${params.row.id}`
                     }
                     onClick={() => {
                         voteFinishAlert(params.row.status);
