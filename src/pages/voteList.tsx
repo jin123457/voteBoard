@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getVoteData } from "../redux/voteReducer";
+import { getVoteData } from "../Redux/VoteReducer";
 import { Box, Alert, Collapse, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import Layout from "../components/layout";
+import Layout from "../Components/Loading";
 import CloseIcon from "@mui/icons-material/Close";
 function VoteResult() {
     const [alertOpen, setAlertOpen] = useState(false);
@@ -17,7 +17,6 @@ function VoteResult() {
     }, []);
     const voteFinishAlert = (props: number) =>
         props !== 1 && setAlertOpen(true);
-    console.log(alertOpen);
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 90 },
         {
@@ -70,7 +69,7 @@ function VoteResult() {
                     experimentalFeatures={{ newEditingApi: true }}
                 />
             </Box>
-            <Link to="/write">등록</Link>
+            <Link to="/create">등록</Link>
             {alertOpen ? (
                 <Collapse in={alertOpen}>
                     <Alert

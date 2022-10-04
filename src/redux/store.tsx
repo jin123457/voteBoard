@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import voteResultReducer from "./voteReducer";
+import voteResultReducer from "./VoteReducer";
 export const store = configureStore({
-  reducer: {
-    voteResultReducer,
-  },
+    reducer: {
+        voteResultReducer,
+    },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

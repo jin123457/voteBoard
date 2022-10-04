@@ -3,14 +3,14 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
     getVoteSelectedData,
-    IParticiPants,
+    IVoteAnswer,
     postVoteAnswerData,
-} from "../redux/voteReducer";
-import VoteInputType from "../components/vote/inputType";
-import Layout from "../components/layout";
+} from "../Redux/VoteReducer";
+import VoteInputType from "../Components/Vote/InputType";
+import Layout from "../Components/Loading";
 
 function VoteView() {
-    const prams = useParams();
+    const params = useParams();
 
     const voteSelectedState = useSelector(
         (state: any) => state.voteResultReducer
@@ -19,16 +19,22 @@ function VoteView() {
     const voteAnswerState = useSelector(
         (state: any) => state.voteResultReducer.currentAnswers
     );
-    const answerData: IParticiPants = {
-        id: 5,
-        name: "진솔111",
-        answers: voteAnswerState,
-    };
+
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getVoteSelectedData(prams.id));
-    }, []);
+        dispatch(getVoteSelectedData(params.id));
+    }, [dispatch, params.id, voteSelectedState.isUpload]);
+    const handlePostAnswer = () => {
+        if (params.id) {
+            const answer: IVoteAnswer = {
+                vote_id: parseInt(params.id),
+                user_id: 1,
+                answers: voteAnswerState,
+            };
+            dispatch(postVoteAnswerData({ answer, votesId: params.id }));
+        }
+    };
     return (
         <>
             {voteSelectedState.selectedVoteData && (
@@ -48,7 +54,11 @@ function VoteView() {
                     {voteSelectedState.loading ? <Layout /> : null}
                 </>
             )}
-            <button onClick={() => dispatch(postVoteAnswerData(answerData))}>
+            <button
+                onClick={() => {
+                    handlePostAnswer();
+                }}
+            >
                 제출
             </button>
         </>

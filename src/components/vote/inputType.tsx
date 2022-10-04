@@ -6,10 +6,10 @@ import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
-import { IVote } from "../../redux/voteReducer";
-import { PostUserData, IVoteAnswer } from "../../redux/voteReducer";
+import { IVote } from "../../Redux/VoteReducer";
+import { setCurrentAnswer, IVoteAnswer } from "../../Redux/VoteReducer";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ISelectedData {
     data: IVote;
@@ -21,6 +21,20 @@ function VoteInputType({ data }: ISelectedData) {
     const voteAnswerState = useSelector(
         (state: any) => state.voteResultReducer
     );
+    const [checkedAnswerState, setCheckedAnswerState] = useState(false);
+    const myId = 1;
+    useEffect(() => {
+        const checkedAnswer = data.participants.map(
+            (currentParticipant: any) => {
+                return currentParticipant.user_id;
+            }
+        );
+        if (checkedAnswer.indexOf(myId) !== -1) {
+            setCheckedAnswerState(true);
+        } else {
+            setCheckedAnswerState(false);
+        }
+    }, [setCheckedAnswerState, checkedAnswerState, data.participants]);
 
     const handleRadioChange = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -35,7 +49,7 @@ function VoteInputType({ data }: ISelectedData) {
                 }
             }
         );
-        dispatch(PostUserData(radioAnswer));
+        dispatch(setCurrentAnswer(radioAnswer));
     };
 
     const handleCheckBoxChange = (
@@ -57,12 +71,12 @@ function VoteInputType({ data }: ISelectedData) {
                 }
             }
         );
-        dispatch(PostUserData(checkBoxAnswer));
+        dispatch(setCurrentAnswer(checkBoxAnswer));
     };
     useEffect(() => {
         dispatch(
-            PostUserData(
-                data.question.map((question) => (question.type === 1 ? 0 : []))
+            setCurrentAnswer(
+                data.questions.map((question) => (question.type === 1 ? 0 : []))
             )
         );
     }, []);
@@ -74,7 +88,7 @@ function VoteInputType({ data }: ISelectedData) {
                 flexDirection: "column",
             }}
         >
-            {data.question.map((voteQuestion, questionIdx: number) => {
+            {data.questions.map((voteQuestion, questionIdx: number) => {
                 const inputType = voteQuestion.type;
                 return (
                     <FormControl
@@ -100,7 +114,14 @@ function VoteInputType({ data }: ISelectedData) {
                                         <FormControlLabel
                                             key={idx}
                                             value={answer}
-                                            control={<Radio value={idx + 1} />}
+                                            control={
+                                                <Radio
+                                                    value={idx + 1}
+                                                    disabled={
+                                                        checkedAnswerState
+                                                    }
+                                                />
+                                            }
                                             label={answer}
                                         />
                                     )
@@ -121,6 +142,9 @@ function VoteInputType({ data }: ISelectedData) {
                                                             event,
                                                             questionIdx
                                                         )
+                                                    }
+                                                    disabled={
+                                                        checkedAnswerState
                                                     }
                                                 />
                                             }
