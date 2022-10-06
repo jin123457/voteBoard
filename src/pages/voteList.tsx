@@ -6,6 +6,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import Layout from "../components/Loading";
 import CloseIcon from "@mui/icons-material/Close";
+
 function VoteResult() {
   const [alertOpen, setAlertOpen] = useState(false);
   const voteResultState = useSelector((state: any) => state.voteResultReducer);
@@ -13,9 +14,11 @@ function VoteResult() {
 
   useEffect(() => {
     dispatch(getVoteData());
-  }, []);
+  }, [dispatch]);
 
-  const voteFinishAlert = (props: number) => props !== 1 && setAlertOpen(true);
+  const voteFinishAlert = (status: number) =>
+    status !== 1 && setAlertOpen(true);
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
     {

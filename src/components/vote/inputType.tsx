@@ -22,10 +22,10 @@ function VoteInputType({ data }: ISelectedData) {
   const [checkedAnswerState, setCheckedAnswerState] = useState(false);
   const myId = 1;
   useEffect(() => {
-    const checkedAnswer = data.participants.map((currentParticipant: any) => {
+    const checkedAnswer = data.participants?.map((currentParticipant: any) => {
       return currentParticipant.user_id;
     });
-    if (checkedAnswer.indexOf(myId) !== -1) {
+    if (checkedAnswer?.indexOf(myId) !== -1) {
       setCheckedAnswerState(true);
     } else {
       setCheckedAnswerState(false);

@@ -4,30 +4,28 @@ import { useSelector, useDispatch } from "react-redux";
 import { getVoteSelectedData } from "../redux/voteReducer";
 import Layout from "../components/Loading";
 import PieChart from "../components/PieChart";
+import { RootState } from "../redux/store";
 
 function VoteResult() {
   const params = useParams();
-  const voteSelectedState = useSelector(
-    (state: any) => state.voteResultReducer
-  );
   const dispatch = useDispatch();
+
+  const { loading, selectedVoteData } = useSelector(
+    (state: RootState) => state.voteResultReducer
+  );
+
   useEffect(() => {
     dispatch(getVoteSelectedData(params.id));
-  }, []);
-  console.log(voteSelectedState.selectedVoteData);
+  }, [dispatch, params.id]);
+
   return (
     <>
-      {voteSelectedState.selectedVoteData && (
-        <>
-          {voteSelectedState.selectedVoteData.participants.map(
-            (resultData: any) => {
-              return <div>{resultData.answers}</div>;
-            }
-          )}
-          <PieChart />
-          {voteSelectedState.loading ? <Layout /> : null}
-        </>
-      )}
+      {selectedVoteData &&
+        selectedVoteData.participants?.map((participant) => (
+          <div key={participant.id}>{participant.answers}</div>
+        ))}
+      <PieChart />
+      {loading ? <Layout /> : null}
     </>
   );
 }

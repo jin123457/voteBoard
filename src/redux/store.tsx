@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import voteResultReducer from "./VoteReducer";
+import voteResultReducer from "./voteReducer";
 export const store = configureStore({
   reducer: {
     voteResultReducer,

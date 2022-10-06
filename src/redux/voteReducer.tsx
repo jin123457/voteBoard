@@ -12,6 +12,7 @@ export interface IParticiPants {
   name?: string;
   answers: (number | number[])[];
 }
+
 export interface IQuestion {
   type: number;
   text: string;
@@ -19,37 +20,28 @@ export interface IQuestion {
 }
 
 export interface IVote {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  creator: number;
+  id?: number;
+  created_at?: string;
+  updated_at?: string;
+  creator_id: number;
   title: string;
-  participants: IParticiPants[];
+  participants?: IParticiPants[];
   questions: IQuestion[];
   start_time: string;
   end_time: string;
-  status: number;
+  status?: number;
 }
 
-export interface INewVote {
-  creator_id: number;
-  title: string;
-  start_time: string;
-  end_time: string;
-  status: number;
-  questions: IQuestion;
-}
-
-interface voteDataState {
+export interface IVoteState {
   voteData: IVote[];
   selectedVoteData: IVote | null;
   currentAnswers: (number | number[])[];
-  setNewVote: INewVote | null;
+  setNewVote: IVote | null;
   isUpload: boolean;
   loading: boolean;
 }
 
-const initialState: voteDataState = {
+const initialState: IVoteState = {
   voteData: [],
   selectedVoteData: null,
   currentAnswers: [],
@@ -70,6 +62,7 @@ export const getVoteSelectedData: any = createAsyncThunk(
     return response.data;
   }
 );
+
 export const postVoteAnswerData: any = createAsyncThunk(
   "postVoteAnswerData",
   async (params: { answer: IVoteAnswer; votesId: number }, thunkAPI) => {
@@ -97,7 +90,7 @@ export const createVote: any = createAsyncThunk(
   }
 );
 
-export const voteData = createSlice({
+const voteData = createSlice({
   name: "voteData",
   initialState,
   reducers: {
@@ -133,5 +126,6 @@ export const voteData = createSlice({
     },
   },
 });
+
 export const { setCurrentAnswer, setNewVote } = voteData.actions;
 export default voteData.reducer;
