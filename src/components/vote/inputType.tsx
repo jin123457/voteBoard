@@ -6,45 +6,36 @@ import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
-import { IVote } from "../../redux/voteReducer";
-import { setCurrentAnswer, IVoteAnswer } from "../../redux/voteReducer";
+import { setCurrentAnswer, IVote } from "../../redux/voteReducer";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { RootState } from "../../redux/store";
 
-interface ISelectedData {
+const TEST_ID = 1;
+
+interface Props {
   data: IVote;
 }
 
-function VoteInputType({ data }: ISelectedData) {
+function VoteInputType({ data }: Props) {
   const dispatch = useDispatch();
 
-  const voteAnswerState = useSelector((state: any) => state.voteResultReducer);
+  const voteAnswerState = useSelector(
+    (state: RootState) => state.voteResultReducer
+  );
   const [checkedAnswerState, setCheckedAnswerState] = useState(false);
-  const myId = 1;
-  useEffect(() => {
-    const checkedAnswer = data.participants?.map((currentParticipant: any) => {
-      return currentParticipant.user_id;
-    });
-    if (checkedAnswer?.indexOf(myId) !== -1) {
-      setCheckedAnswerState(true);
-    } else {
-      setCheckedAnswerState(false);
-    }
-  }, [setCheckedAnswerState, checkedAnswerState, data.participants]);
 
   const handleRadioChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     target: number
   ) => {
-    const radioAnswer = voteAnswerState.currentAnswers.map(
-      (answer: IVoteAnswer, idx: number) => {
-        if (idx === target) {
-          return parseInt(event.target.defaultValue);
-        } else {
-          return answer;
-        }
+    const radioAnswer = voteAnswerState.currentAnswers.map((answer, idx) => {
+      if (idx === target) {
+        return parseInt(event.target.defaultValue);
+      } else {
+        return answer;
       }
-    );
+    });
     dispatch(setCurrentAnswer(radioAnswer));
   };
 
@@ -52,28 +43,40 @@ function VoteInputType({ data }: ISelectedData) {
     event: React.ChangeEvent<HTMLInputElement>,
     target: number
   ) => {
-    const checkBoxAnswer = voteAnswerState.currentAnswers.map(
-      (answer: IVoteAnswer["answers"], idx: number) => {
-        if (idx === target) {
-          if (event.target.checked) {
-            return [...answer, parseInt(event.target.value)];
-          } else {
-            return answer.filter((el) => el !== parseInt(event.target.value));
-          }
+    const checkBoxAnswer = voteAnswerState.currentAnswers.map((answer, idx) => {
+      if (idx === target) {
+        if (event.target.checked) {
+          return [...(answer as number[]), parseInt(event.target.value)];
         } else {
-          return answer;
+          return (answer as number[]).filter(
+            (el) => el !== parseInt(event.target.value)
+          );
         }
+      } else {
+        return answer;
       }
-    );
+    });
     dispatch(setCurrentAnswer(checkBoxAnswer));
   };
+
+  useEffect(() => {
+    const checkedAnswer = data.participants?.map(
+      (currentParticipant) => currentParticipant.id
+    );
+    if (checkedAnswer?.includes(TEST_ID)) {
+      setCheckedAnswerState(true);
+    } else {
+      setCheckedAnswerState(false);
+    }
+  }, [setCheckedAnswerState, data.participants]);
+
   useEffect(() => {
     dispatch(
       setCurrentAnswer(
         data.questions.map((question) => (question.type === 1 ? 0 : []))
       )
     );
-  }, []);
+  }, [dispatch, data.questions]);
 
   return (
     <Box

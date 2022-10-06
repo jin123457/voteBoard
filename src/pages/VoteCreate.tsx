@@ -32,9 +32,6 @@ function VoteCreate() {
   const [newVoteState, setNewVoteState] = useState(defaultVoteData);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [finishDate, setFinishDate] = useState<Dayjs | null>(null);
-  const [questionState, setQuestionState] = useState("");
-  const [questionCount, setQuestionCount] = useState([0]);
-  const [questionValue, setQuestionValue] = useState<String[]>([]);
 
   useEffect(() => {
     const startDateData = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
@@ -67,16 +64,6 @@ function VoteCreate() {
     });
   };
 
-  const handleQuestionValue = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    target: number
-  ) => {
-    let qusetionValueArr = [...questionValue];
-    if (qusetionValueArr[target] !== questionValue[target]) {
-      qusetionValueArr.push(event.target.value);
-      setQuestionValue(qusetionValueArr);
-    }
-  };
   const handleTitleValue = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -100,19 +87,7 @@ function VoteCreate() {
       }),
     });
   };
-  useEffect(() => {
-    setNewVoteState({
-      ...newVoteState,
-      questions: newVoteState.questions.map((question, index) => {
-        if (1 === index) {
-          question.type = parseInt(questionState);
-        }
-        return question;
-      }),
-    });
-  }, [questionState]);
 
-  console.log(newVoteState);
   const handleElementsChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     questionIndex: number,
@@ -124,7 +99,6 @@ function VoteCreate() {
         if (questionIndex === qIdx) {
           question.elements = question.elements.map((element, index) => {
             if (index === elementIndex) {
-              console.log(event.target.value);
               element = event.target.value;
             }
             return element;
